@@ -1,0 +1,166 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+>
+
+<ui:composition template="WEB-INF/template/layout.xhtml">
+
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewAction action="#{itemBean.init}" onPostback="false"/>
+        </f:metadata>
+        <b:row>
+            <b:column medium-screen="12">
+                <b:panel title="Item" collapsible="false" look="info">
+                    <b:row>
+                        <b:column medium-screen="2">
+
+                            <b:button id="newTrigger" class="btn btn-success btn-md"
+                                      data-toggle="modal" data-target="#newModal"
+                                      value="Adicionar Novo Item" onclick="$('.newModal').modal()"/>
+
+                            <b:modal id="newModal" title="Novo Item" styleClass="newModal"
+                                     closable="false"
+                                     closeOnEscape="true">
+                                <b:form styleClass="formNewItem">
+                                    <b:messages for="@form:*:inputTextDescription,@form:*:inputTextValue"/>
+                                    <b:inputText value="#{itemBean.description}" label="Descrição"
+                                                 maxlength="255"
+                                                 required="true"
+                                                 id="inputTextDescription"
+                                                 requiredMessage="Campo Descrição é requirido"/>
+                                    <b:inputText value="#{itemBean.value}" maxlength="10" label="Valor"
+                                                 converter="javax.faces.Double"
+                                                 id="inputTextValue"
+                                                 required="true" converter-message="Valor não é um formato válido"
+                                                 requiredMessage="Campo Valor é requirido"
+                                                 placeholder="Exemplo: 1200.10">
+                                        <f:facet name="prepend">
+                                            <h:outputText value="R$"/>
+                                        </f:facet>
+                                    </b:inputText>
+                                    <b:row>
+                                        <b:column>
+                                            <b:commandButton largeScreen="half" value="Cancelar" look="default" immediate="true"
+                                                      dismiss="modal" oncomplete="$('.newModal').modal('hide')">
+                                                <f:resetValues render="@this"/>
+                                            </b:commandButton>
+
+                                            <b:commandButton largeScreen="half" update="@form" ajax="true"
+                                                             render="items"
+                                                             dismiss="modal" action="#{itemBean.save}"
+                                                             value="Salvar" look="success"
+                                                             oncomplete="if(!validationFailed) { $('.formNewItem').submit() }"/>
+                                        </b:column>
+                                    </b:row>
+                                    <b:fetchBeanInfos/>
+                                </b:form>
+                            </b:modal>
+
+                        </b:column>
+                    </b:row>
+                    <br/>
+                    <b:row>
+                        <b:column medium-screen="12">
+                            <b:panel title="Itens Cadastrados" collapsible="false" look="primary"
+                                     styleClass="dataTablePanel">
+                                <b:dataTable id="items" value="#{itemBean.itemsPool}" styleClass="dataTable"
+                                             var="item"
+                                             customLangUrl="//cdn.datatables.net/plug-ins/1.10.12/i18n/Portuguese-Brasil.json">
+                                    <b:dataTableColumn value="#{item.id}" label="id" col-md="1" order="asc"/>
+                                    <b:dataTableColumn value="#{item.description}" label="Descrição" col-md="8"/>
+                                    <b:dataTableColumn label="Valor" col-md="2">
+                                        <h:outputText value="R$ "/>
+                                        <h:outputText value="#{item.value}">
+                                            <f:convertNumber minFractionDigits="2"/>
+                                        </h:outputText>
+                                    </b:dataTableColumn>
+                                    <b:dataTableColumn label="Ações" col-md="1" orderable="false" searchable="false">
+                                        <b:form>
+
+                                            <b:commandButton styleClass="updateTrigger" class="btn btn-warning btn-xs"
+                                                             ajax="true"
+                                                             data-toggle="modal" update="@(.editForm)"
+                                                             actionListener="#{itemBean.setCurrentItem(item)}"
+                                                             icon="edit"
+                                                             oncomplete="$('.editModalClass').modal('show')"/>
+                                            <span></span>
+                                            <b:commandButton styleClass="deleteTrigger" class="btn btn-danger btn-xs"
+                                                             ajax="true"
+                                                             data-toggle="modal" update="@(.deleteForm)"
+                                                             actionListener="#{itemBean.setCurrentItem(item)}"
+                                                             icon="remove"
+                                                             oncomplete="$('.deleteModalClass').modal('show')"/>
+
+                                        </b:form>
+                                    </b:dataTableColumn>
+                                </b:dataTable>
+                            </b:panel>
+                        </b:column>
+                    </b:row>
+                    <br/>
+                </b:panel>
+
+                <b:modal title="Editar Item" styleClass="editModalClass" id="editModal"
+                         closable="false"
+                         closeOnEscape="true">
+
+                    <b:form styleClass="editForm" id="editFrm">
+                        <b:messages></b:messages>
+                        <b:inputText value="#{itemBean.currentItem.id}" readonly="true" label="Id"/>
+                        <b:inputText value="#{itemBean.editDescription}" label="Descrição"
+                                     maxlength="255"
+                                     required="true"
+                                     requiredMessage="Campo Descrição é requirido"/>
+                        <b:inputText value="#{itemBean.editValue}"
+                                     maxlength="10" label="Valor"
+                                     converter="javax.faces.Double"
+                                     required="true" converter-message="Valor não é um formato válido"
+                                     requiredMessage="Campo Valor é requirido"
+                                     placeholder="Exemplo: 1,250.00">
+                            <f:facet name="prepend">
+                                <h:outputText value="R$"/>
+                            </f:facet>
+                        </b:inputText>
+                        <b:fetchBeanInfos/>
+                        <b:row>
+                            <b:column>
+                                <b:commandButton largeScreen="half" value="Cancelar" look="default"
+                                                 dismiss="modal" onclick="$('.editModalClass').modal('hide')"/>
+                                <b:commandButton largeScreen="half" update="@form"
+                                                 dismiss="modal"
+                                                 ajax="true"
+                                                 action="#{itemBean.update}"
+                                                 value="Atualizar" look="warning"
+                                                 oncomplete="if(!validationFailed) { $('.editForm').submit()  }"/>
+                            </b:column>
+                        </b:row>
+                    </b:form>
+
+                </b:modal>
+                <b:modal id="deleteModal" title="Deletar" styleClass="deleteModalClass">
+                    <b:form styleClass="deleteForm">
+                        <p>Tem certeza que deseja deletar o item
+                            <b:label text="#{itemBean.currentItem.id}" severity="danger"/>
+                            ?
+                        </p>
+                        <b:row>
+                            <b:column>
+                                <b:button largeScreen="half" value="Cancelar" look="default"
+                                          dismiss="modal" onclick="$('.deleteModalClass').modal('hide')"/>
+                                <b:commandButton largeScreen="half" value="Deletar" look="danger" dismiss="modal"
+                                                 action="#{itemBean.delete}"/>
+                            </b:column>
+                        </b:row>
+                    </b:form>
+                </b:modal>
+
+            </b:column>
+        </b:row>
+    </ui:define>
+</ui:composition>
+</html>
+                        
+                            

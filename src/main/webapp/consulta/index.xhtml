@@ -1,0 +1,89 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+>
+
+<ui:composition template="../WEB-INF/template/layout.xhtml">
+    <ui:define name="content">
+        <b:row>
+            <b:column medium-screen="12">
+                <b:panel title="Consultas" collapsible="false" look="info">
+                    <b:form styleClass="queryFormClass" id="queryForm">
+                        <b:formGroup>
+                            <b:commandButton styleClass="queryButton" class="btn btn-info btn-xs"
+                                             ajax="false"
+                                             value="Requisito #10"
+                                             action="#{queryBean.calculateTotalByMediaItemsGreaterThanOrEqual100}"
+                                             icon="zoom-in"/>
+                            <span></span>
+                            <h:outputText value="Total de Lancamentos: "/>
+                            <h:outputText value="#{queryBean.totalLancamentos}" render="#{queryBean.totalLancamentos}!= null">
+                                <f:convertNumber type="currency" symbol="R$"/>
+                            </h:outputText>
+                            <span>| </span>
+                            <h:outputText
+                                    value="Fazer uma consulta para somar o total dos lançamentos, cujo a média dos itens foi maior ou igual à R$ 100,00."/>
+                        </b:formGroup>
+                        <b:formGroup>
+                            <b:commandButton styleClass="queryButton" class="btn btn-success btn-xs"
+                                             ajax="false"
+                                             value="Requisito #11"
+                                             data-toggle="modal"
+                                             action="#{queryBean.findByTop10MaxValueItemAndDescStartA}"
+                                             icon="zoom-in"/>
+                            <span> | </span>
+                            <h:outputText
+                                    value=" Fazer uma consulta para trazer os 10 lançamentos que possuam o maior valor de itens e tenham a descrição começando com a letra A. "/>
+                            <h:outputText
+                                    value=" Sendo que só devem mostrar lançamentos no qual o somatório desses itens sejam maiores que R$ 50,00"/>
+                        </b:formGroup>
+                        <b:formGroup>
+                            <b:commandButton styleClass="queryButton" class="btn btn-warning btn-xs"
+                                             ajax="false"
+                                             value="Requisito #12"
+                                             data-toggle="modal"
+                                             action="#{queryBean.findByCountItemsGreaterThan10}"
+                                             icon="zoom-in"/>
+                            <span> | </span>
+                            <h:outputText
+                                    value=" Crie um script para selecionar todos os lançamentos que possuam mais que 10 itens e alterar a observação dos lançamentos selecionados anteriormente"/>
+                            <h:outputText
+                                    value=" concatenando a observação atual com a seguinte texto ('- Possuem mais que 10 itens')."/>
+                        </b:formGroup>
+                    </b:form>
+                    <b:dataTable value="#{queryBean.lancamentos}" styleClass="datatable"
+                                 var="lancamento"
+                                 searching="false"
+                                 paginated="false"
+                                 select="false"
+                                 customLangUrl="//cdn.datatables.net/plug-ins/1.10.12/i18n/Portuguese-Brasil.json">
+                        <b:dataTableColumn value="#{lancamento.id}" label="id" col-md="1" order="asc"/>
+                        <b:dataTableColumn label="Data Inicial" col-md="2">
+                            <h:outputText value="#{lancamento.dateInitial}">
+                                <f:convertDateTime type="datetime" pattern="dd-MM-yyyy HH:mm:ss"/>
+                            </h:outputText>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn label="Data Final" col-md="2">
+                            <h:outputText value="#{lancamento.dateFinal}">
+                                <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+                            </h:outputText>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn label="Total" col-md="2">
+                            <h:outputText value="#{lancamento.valueTotal}">
+                                <f:convertNumber type="currency" symbol="R$"/>
+                            </h:outputText>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn label="Observação" col-md="4" styleClass="truncate">
+                            <div>
+                                <h:outputText value="#{lancamento.observation}"/>
+                            </div>
+                        </b:dataTableColumn>                       
+                    </b:dataTable>
+                </b:panel>
+            </b:column>
+        </b:row>
+    </ui:define>
+</ui:composition>
+</html>

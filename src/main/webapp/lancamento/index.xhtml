@@ -1,0 +1,139 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="../WEB-INF/template/layout.xhtml">
+    <ui:define name="content">
+        <f:metadata>
+            <f:viewAction action="#{lancamentoBean.init}" onPostback="false" />
+        </f:metadata>
+        <h:outputStylesheet library="css" name="transpoBrasil.css"  />
+        <b:row>
+            <b:column medium-screen="12">
+                <b:panel title="Lancamento" collapsible="false" look="info">
+                    <b:row>
+                        <b:column medium-screen="2">
+                            <b:commandLink class="btn btn-success btn-md" href="register.xhtml"
+                                           data-toggle="modal">Novo Lancamento
+                            </b:commandLink>
+                        </b:column>
+                    </b:row>
+                    <br/>
+                    <b:panel title="Lançamentos Cadastrados" collapsible="false" look="primary">
+                        <b:dataTable value="#{lancamentoBean.lancamentos}" styleClass="datatable"
+                                     var="lancamento"
+                                     customLangUrl="//cdn.datatables.net/plug-ins/1.10.12/i18n/Portuguese-Brasil.json">
+                            <b:dataTableColumn value="#{lancamento.id}" label="id" col-md="1" order="asc"/>
+                            <b:dataTableColumn label="Data Inicial" col-md="2">
+                                <h:outputText value="#{lancamento.dateInitial}">
+                                    <f:convertDateTime type="datetime" pattern="dd-MM-yyyy HH:mm:ss"/>
+                                </h:outputText>
+                            </b:dataTableColumn>
+                            <b:dataTableColumn label="Data Final" col-md="2">
+                                <h:outputText value="#{lancamento.dateFinal}">
+                                    <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+                                </h:outputText>
+                            </b:dataTableColumn>
+                            <b:dataTableColumn label="Observação" col-md="4" styleClass="truncate">
+                                <div>
+                                    <h:outputText value="#{lancamento.observation}"/>
+                                </div>
+                            </b:dataTableColumn>
+                            <b:dataTableColumn label="Ações" col-md="1" orderable="false" searchable="false">
+                                <b:form>
+                                    <b:commandButton styleClass="showViewTrigger" class="btn btn-info btn-xs"
+                                                     ajax="true"
+                                                     data-toggle="modal" update="@(.viewModalClass)"
+                                                     action="#{lancamentoBean.setCurrentLancamento(lancamento)}"
+                                                     icon="zoom-in"
+                                                     oncomplete="$('.viewModalClass').modal('show')"/>
+
+                                    <span></span>
+                                    <b:commandLink styleClass="showEditTrigger" class="btn btn-warning btn-xs" include-view-params="true"
+                                                     outcome="register.xhtml"
+                                                     ajax="false"
+                                                     icon="zoom-in">
+                                        <f:param name="id" value="#{lancamento.id}"/>
+                                    </b:commandLink>
+                                    <span></span>
+                                    <b:commandButton styleClass="deleteTrigger" class="btn btn-danger btn-xs"
+                                                     ajax="true"
+                                                     data-toggle="modal" update="@(.deleteForm)"
+                                                     action="#{lancamentoBean.setCurrentLancamento(currentLancamento)}"
+                                                     icon="remove"
+                                                     oncomplete="$('.deleteModalClass').modal('show')"/>
+                                </b:form>
+                            </b:dataTableColumn>
+                        </b:dataTable>
+
+                        <b:modal id="deleteModal" title="Deletar" styleClass="deleteModalClass">
+                            <b:form styleClass="deleteForm">
+                                <p>Tem certeza que deseja deletar o item
+                                    <b:label text="#{lancamentoBean.currentLancamento.id}" severity="danger"/>
+                                    ?
+                                </p>
+                                <b:row>
+                                    <b:column>
+                                        <b:button largeScreen="half" value="Cancelar" look="default"
+                                                  dismiss="modal" onclick="$('.deleteModalClass').modal('hide')"/>
+                                        <b:commandButton largeScreen="half" value="Deletar" look="danger"
+                                                         dismiss="modal" action="#{lancamentoBean.delete}"/>
+                                    </b:column>
+                                </b:row>
+                            </b:form>
+                        </b:modal>
+
+                        <b:modal id="viewModal" title="Visualizar" styleClass="viewModalClass">
+                            <b:panelGrid columns="2" layout="grid">
+
+                                <h:outputText value="Id: " style="font-weight: bold;"></h:outputText>
+                                <h:outputText value="#{lancamentoBean.currentLancamento.id}"/>
+
+
+                                <h:outputText value="Data Inicial: " style="font-weight: bold;"></h:outputText>
+                                <h:outputText value="#{lancamentoBean.currentLancamento.dateInitial}">
+                                    <f:convertDateTime type="datetime" pattern="dd-MM-yyyy HH:mm:ss"/>
+                                </h:outputText>
+
+
+                                <h:outputText value="Data Final: " style="font-weight: bold;"></h:outputText>
+                                <h:outputText value="#{lancamentoBean.currentLancamento.dateFinal}">
+                                    <f:convertDateTime type="datetime" pattern="dd-MM-yyyy"/>
+                                </h:outputText>
+
+                                <h:outputText style="font-weight: bold;" value="Observação: "/>
+
+                                <p:column colspan="2">#{lancamentoBean.currentLancamento.observation}</p:column>
+                                <h:outputText style="font-weight: bold;" value="Total de Itens: " rendered="#{empty lancamentoBean.currentLancamento.items}"/>
+                                <h:outputText value="R$ 0,00" rendered="#{empty lancamentoBean.currentLancamento.items}"/>
+                                
+                                <h:outputText style="font-weight: bold;" value="Total de Itens: " rendered="#{!empty lancamentoBean.currentLancamento.items}"/>
+                                <h:outputText value="#{lancamentoBean.currentLancamento.valueTotal}" rendered="#{!empty lancamentoBean.currentLancamento.items}">
+                                    <f:convertNumber type="currency" symbol="R$"/>
+                                </h:outputText>
+                                <br/>
+                            </b:panelGrid>
+                            <p:dataTable var="item" value="#{lancamentoBean.currentLancamento.items}" rendered="#{!empty lancamentoBean.currentLancamento.items}">
+                                <p:column headerText="Id">
+                                    <h:outputText value="#{item.id}"/>
+                                </p:column>
+                                <p:column headerText="Descrição">
+                                    <h:outputText value="#{item.description}"/>
+                                </p:column>
+                                <p:column headerText="Valor">
+                                    <h:outputText value="#{item.value}">
+                                        <f:convertNumber type="currency" symbol="R$"/>
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>
+                        </b:modal>
+                    </b:panel>
+                </b:panel>
+            </b:column>
+        </b:row>
+    </ui:define>
+</ui:composition>
+</html>

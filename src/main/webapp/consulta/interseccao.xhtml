@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:b="http://bootsfaces.net/ui"
+>
+
+<ui:composition template="../WEB-INF/template/layout.xhtml">
+    <ui:define name="content">
+        <b:row>
+            <b:column medium-screen="12">
+                <b:panel title="Intersecção" collapsible="false" look="info">
+                    <b:form styleClass="interFormClass" id="interForm">
+                        <b:panelGrid colSpans="2,10" size="xs">
+                            <h:outputLabel value="Faixa 1"/>
+                            <b:slider2 min="0" max="100" span="7" value="#{intersectionBean.intervalA.min}"
+                                       label="Mínimo"/>
+                            <h:outputLabel value=" "/>
+                            <b:slider2 min="0" max="100" span="7" value="#{intersectionBean.intervalA.max}"
+                                       label="Máximo"/>
+                            <h:outputLabel value=""/>
+                            <h:outputLabel value=""/>
+                            <h:outputLabel value=""/>
+                            <h:outputLabel value=""/>
+
+                            <h:outputLabel value="Faixa 2"/>
+                            <b:slider2 min="0" max="100" span="7" value="#{intersectionBean.intervalB.min}"
+                                       label="Mínimo"/>
+                            <h:outputLabel value=" "/>
+                            <b:slider2 min="0" max="100" span="7" value="#{intersectionBean.intervalB.max}"
+                                       label="Máximo"/>
+                            <h:outputLabel value=""/>
+                            <h:outputLabel value=""/>
+                            <h:outputLabel value=""/>
+                            
+                            <b:commandButton id="verify" action="#{intersectionBean.verify}" value="Consultar"
+                                             look="primary"/>
+                        </b:panelGrid>
+
+                        <b:messages global-only="true"/>
+                    </b:form>
+                </b:panel>
+            </b:column>
+        </b:row>
+    </ui:define>
+</ui:composition>
+</html>

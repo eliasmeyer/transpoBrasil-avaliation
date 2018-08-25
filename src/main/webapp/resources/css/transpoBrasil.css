@@ -1,0 +1,11 @@
+.datatable {
+  table-layout: fixed;
+  width: 520px;
+}
+
+.truncate > div{
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

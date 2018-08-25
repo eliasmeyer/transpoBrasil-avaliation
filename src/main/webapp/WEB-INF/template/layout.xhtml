@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:b="http://bootsfaces.net/ui">
+
+<h:head>
+  <title>TranspoBrasil</title>
+</h:head>
+<h:body>
+<b:container>
+<b:navBar brand="TranspoBrasil" brandHref="#" fluid="true">
+  <b:navbarLinks>
+    <b:navLink value="Item" href="../item.xhtml"></b:navLink>
+    <b:navLink value="Lançamento" href="/transpoBrasil/lancamento/index.xhtml"></b:navLink>
+    <b:dropMenu value="Consultas">
+      <b:navLink value="Lançamentos" href="/transpoBrasil/consulta/index.xhtml"></b:navLink>
+      <b:navLink></b:navLink>
+      <b:navLink header="Outras Consultas"></b:navLink>
+      <b:navLink value="Intersecção" href="/transpoBrasil/consulta/interseccao.xhtml"></b:navLink>      
+    </b:dropMenu>
+  </b:navbarLinks>
+</b:navBar>
+
+<div id="content">
+  <ui:insert name="content">
+  </ui:insert>
+</div>
+</b:container>
+</h:body>
+</html>

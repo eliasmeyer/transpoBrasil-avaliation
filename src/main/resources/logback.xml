@@ -1,0 +1,38 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSS}|%-5level|%logger{50}|%thread|%msg#]%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>target/logs/transpobrasil-avaliation.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSS}|%-5level|%logger{50}|%thread|%msg#]%n</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- We are rolling over daily -->
+            <fileNamePattern>transpobrasil-avaliation.log.%d{yyyy-MM-dd}.zip</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="org.springframework" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="br.com.transpobrasil" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

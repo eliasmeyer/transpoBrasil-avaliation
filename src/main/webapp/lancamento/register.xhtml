@@ -1,0 +1,177 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="../WEB-INF/template/layout.xhtml">
+    <f:metadata>
+        <f:viewParam name="id" value="#{registerLancamentoBean.lancamentoId}"/>
+        <f:viewAction action="#{registerLancamentoBean.init}" onPostback="false" />
+    </f:metadata>
+   
+    <ui:define name="content">
+        <b:row>
+            <b:column medium-screen="12">
+                <b:panel title="Lançamento" collapsible="false" look="info">
+                    <b:row>
+                        <b:column offset="1" medium-screen="10">
+                            <b:panel title="Preencha os dados abaixo para cadastrar um novo Lançamento"
+                                     collapsible="false" look="success">
+                                <b:form id="registerLancamento" styleClass="registerLancamentoClass">
+                                    <b:column medium-screen="12">
+                                        <b:messages id="messagesError"
+                                                    globalOnly="false"
+                                                    severity="error,fatal"
+                                                    escape="false"/>
+                                        <b:row>
+                                            <b:column medium-screen="3">
+                                                <b:inputText label="Id:" disabled="true" value="#{registerLancamentoBean.lancamentoId}"></b:inputText>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column medium-screen="7">
+                                                <b:dateTimePicker id="dateInitial"
+                                                                  value="#{registerLancamentoBean.lancamento.dateInitial}"
+                                                                  mode="popup-icon" showWeek="false"
+                                                                  firstDay="1" use-current="true"
+                                                                  format="DD/MM/YYYY HH:mm:ss"
+                                                                  label="Data Inicial:" col-lg="6" required="true"/>
+                                            </b:column>
+                                            <b:column medium-screen="5">
+                                                <b:datepicker id="dateFinal" mode="popup-icon" showWeek="false"
+                                                              firstDay="1" required="true" format="DD/MM/YYYY"
+                                                              value="#{registerLancamentoBean.lancamento.dateFinal}"
+                                                              label="Data Final:" col-lg="6">
+                                                </b:datepicker>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column medium-screen="12">
+                                                <b:inputTextarea id="observacao" rows="8" span="20" label="Observação"
+                                                                 placeholder="Observação" required="true"
+                                                                 value="#{registerLancamentoBean.lancamento.observation}"
+                                                                 max-length="1000">
+                                                    <f:validateLength minimum="3"/>
+                                                </b:inputTextarea>
+                                            </b:column>
+                                            <br/>
+                                        </b:row>
+                                        <h4>Itens</h4>
+                                        <b:row>
+                                            <b:column span="3">
+                                                <b:button value="Adicionar Item" look="primary"
+                                                          onclick="$('.responsiveModalPseudoClass').modal();tableWidgetVar.DataTable().responsive.recalc();"
+                                                          size="md"/>
+
+                                            </b:column>
+                                        </b:row>
+
+                                        <b:dataTable id="dataTableItemsSelected" styleClass="dataTableSelectedItems"
+                                                     value="#{registerLancamentoBean.currentlySelectedItems}"
+                                                     var="itemSelected"
+                                                     searching="false"
+                                                     paginated="false"
+                                                     select="false"
+                                                     customLangUrl="//cdn.datatables.net/plug-ins/1.10.12/i18n/Portuguese-Brasil.json">
+                                            <b:dataTableColumn value="#{itemSelected.id}" label="id" col-md="1"
+                                                               order="asc"/>
+                                            <b:dataTableColumn value="#{itemSelected.description}" label="Descrição"
+                                                               col-md="8"/>
+                                            <b:dataTableColumn label="Valor"
+                                                               col-md="2">
+                                                <h:outputText value="#{itemSelected.value}">
+                                                    <f:convertNumber minFractionDigits="2" type="currency" symbol="R$"/>
+                                                </h:outputText>
+                                            </b:dataTableColumn>
+                                            <b:dataTableColumn label="" orderable="false">
+                                                <b:commandButton icon="remove" immediate="true" class="btn btn-danger btn-xs"
+                                                                 action="#{registerLancamentoBean.onDeselect(itemSelected)}"
+                                                                 look="danger">
+
+                                                </b:commandButton>
+                                            </b:dataTableColumn>
+                                        </b:dataTable>
+                                        <br/>
+                                        <h:outputFormat style="font-weight: bold;" value="TOTAL DE ITEMS: "/>
+
+                                        <h:outputFormat id="totalItem"
+                                                        value="#{registerLancamentoBean.total}"
+                                                        style="font-weight: bold;">
+                                            <f:convertNumber minFractionDigits="2" type="currency" symbol="R$"/>
+                                        </h:outputFormat>
+                                        <br/>
+                                        <br/>
+                                    </b:column>
+                                    <b:row>
+                                        
+                                        <b:column>
+                                            <div class="col-lg-6">
+                                            <b:commandLink href="index.xhtml"
+                                                           value="Voltar" look="default" />
+                                            </div>
+                                            
+                                            <b:commandButton id="buttonSave" largeScreen="half"
+                                                             value="Salvar" look="success"
+                                                             action="#{registerLancamentoBean.add}"/>
+                                        </b:column>
+                                        <b:growl id="growl" placementFrom="top"
+                                                 show-detail="true"
+                                                 global-only="true"
+                                                 show-summary="true" allow-dismiss="true"
+                                                 animation-enter="animated bounceInDown"
+                                                 escape="true"/>
+                                    </b:row>
+                                </b:form>
+                                <b:modal title="Adicionar Itens" styleClass="responsiveModalPseudoClass"
+                                         id="responsiveModal">
+                                    <b:form id="formItems" styleClass="formItems">
+                                        <b:dataTable id="dataTableItemsPool"
+                                                     value="#{registerLancamentoBean.itemsPool}"
+                                                     var="item"
+                                                     searching="false"
+                                                     paginated="true"
+                                                     select="false"
+                                                     widgetVar="tableWidgetItem"
+                                                     responsive="true"
+                                                     customLangUrl="//cdn.datatables.net/plug-ins/1.10.12/i18n/Portuguese-Brasil.json">
+                                            <b:dataTableColumn value="#{item.id}" label="id" col-md="1"
+                                                               orderable="false"/>
+                                            <b:dataTableColumn value="#{item.description}" label="Descrição"
+                                                               col-md="9" orderable="false"/>
+                                            <b:dataTableColumn label="Valor"
+                                                               col-md="2" orderable="false">
+                                                <h:outputText value="#{item.value}">
+                                                    <f:convertNumber minFractionDigits="2" type="currency" symbol="R$"/>
+                                                </h:outputText>
+                                            </b:dataTableColumn>
+                                            <b:dataTableColumn label="" orderable="false">
+                                                <b:selectBooleanCheckbox
+                                                        value="#{registerLancamentoBean.selectionItems[item]}"/>
+                                            </b:dataTableColumn>
+                                        </b:dataTable>
+                                        <br/>
+                                        <br/>
+                                        <b:row>
+                                            <b:column>
+                                                <b:button largeScreen="half" value="Cancelar" look="default"
+                                                          onclick="$('.responsiveModalPseudoClass').modal('hide')"/>
+
+                                                <b:commandButton largeScreen="half" value="Ok" look="primary"
+                                                                 ajax="true"
+                                                                 update="registerLancamento:totalItem @(.dataTableSelectedItems)"
+                                                                 oncomplete="$('.responsiveModalPseudoClass').modal('hide')"
+                                                                 action="#{registerLancamentoBean.onSelect}"/>
+                                            </b:column>
+                                        </b:row>
+                                    </b:form>
+                                </b:modal>
+                            </b:panel>
+                        </b:column>
+                    </b:row>
+                </b:panel>
+            </b:column>
+        </b:row>
+    </ui:define>
+</ui:composition>
+</html>
