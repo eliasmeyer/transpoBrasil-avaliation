@@ -17,7 +17,7 @@
 
     <!-- Heroku configuration -->
     <bean class="java.net.URI" id="dbUrl">
-        <constructor-arg value="#{systemEnvironment['DATABASE_URL']}"/>
+        <constructor-arg value="#{systemEnvironment['HEROKU_POSTGRESQL_YELLOW_URL']}"/>
     </bean>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.postgresql.Driver" />
