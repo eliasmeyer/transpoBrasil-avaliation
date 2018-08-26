@@ -5,8 +5,6 @@ public class Interval {
     private Integer min;
     private Integer max;
 
-    public Interval() {}
-
     public void setMin(Integer min) {
         this.min = min;
     }
