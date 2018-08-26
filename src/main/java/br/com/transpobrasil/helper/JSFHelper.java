@@ -39,9 +39,9 @@ public class JSFHelper {
         addMessage(FacesContext.getCurrentInstance(), null, new FacesMessage(severity, summary, details));
     }
 
-    public void addMessageErrorToComponent(String component, String message) {
+    /*public void addMessageErrorToComponent(String component, String message) {
         addMessage(FacesContext.getCurrentInstance(), null, new FacesMessage(FacesMessage.SEVERITY_ERROR, message, null));
-    }
+    }*/
 
     public ExternalContext getExternalContext() {
         return FacesContext.getCurrentInstance().getExternalContext();
