@@ -1,8 +1,8 @@
 package br.com.transpobrasil.primality;
 
-public final class Primality {
+public final class Primos {
 
-    private Primality() {}
+    private Primos() {}
 
     private static final int ACCURACY = 100;
     private static final long MIN = 41;
