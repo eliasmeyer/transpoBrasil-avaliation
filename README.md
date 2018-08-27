@@ -12,5 +12,6 @@ O presente código visa atender os requisitos do processo seletivo para empresa 
 * Primefaces
 * Bootfaces
 * Tomcat 8
+* PostgreSQL
 
 Acesse a aplicação via [Heroku](https://ancient-tundra-61662.herokuapp.com/transpoBrasil/)
